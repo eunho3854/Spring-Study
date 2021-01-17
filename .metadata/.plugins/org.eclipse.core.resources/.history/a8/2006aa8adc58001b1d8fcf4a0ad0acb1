@@ -79,9 +79,7 @@ public class BindingAdvice {
 					
 					for(FieldError error : bindingResult.getFieldErrors()) {
 						errorMap.put(error.getField(), error.getDefaultMessage());
-						// 로그 레벨 error, warn, info, debug
 						log.warn(type + "." + method+"() => 필드 : " + error.getField() + ", 메시지 : " + error.getDefaultMessage());
-						log.debug(type + "." + method+"() => 필드 : " + error.getField() + ", 메시지 : " + error.getDefaultMessage());
 					}
 					
 					return new CommonDto<>(HttpStatus.BAD_REQUEST.value(), errorMap);
