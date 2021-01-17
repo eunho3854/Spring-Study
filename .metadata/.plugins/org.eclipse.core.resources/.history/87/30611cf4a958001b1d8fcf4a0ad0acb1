@@ -1,0 +1,9 @@
+package com.cos.pserson.web;
+
+import org.springframework.web.bind.annotation.RestController;
+
+// 사용자 요청 마다 메모리에 뜸
+@RestController
+public class UserController {
+
+}

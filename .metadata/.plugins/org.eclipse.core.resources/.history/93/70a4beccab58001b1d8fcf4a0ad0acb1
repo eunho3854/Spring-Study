@@ -1,0 +1,9 @@
+package com.cos.pserson.domain;
+
+import org.springframework.stereotype.Repository;
+
+// 메모리에 한 번 뜸.
+@Repository
+public class UserRepository {
+
+}

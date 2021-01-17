@@ -1,0 +1,15 @@
+package com.example.demo.web;
+
+import org.springframework.web.bind.annotation.RestController;
+
+// 디스패쳐 서블릿 필터 @Controller @RestController
+// 그 클래스에서 / 주소로 매핑된 메서드가 있는지 리플렉션
+// http://localhost:8000/
+
+@RestController
+public class IndexController {
+	
+	public String index() {
+		
+	}
+}

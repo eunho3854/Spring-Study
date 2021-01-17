@@ -1,0 +1,36 @@
+package com.example.demo.web;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+// 디스패쳐 서블릿 필터에서 com.example.demo 이하의 모든 패키지를
+// 컴포터는 스캔한다. 이때 찾는 어노테이션 => @Controller @RestController
+// 그 클래스에서 / 주소로 매핑된 메서드가 있는지 리플렉션
+// @GetMapping, @PostMapping, @PutMapping, @DeleteMapping 이 4가지를 찾음
+// GET으로 했으면 GetMapping이 걸려있는 함수만 찾아내서
+// "/"로 주소가 걸려있는 함수를 invoke 해준다.
+
+// 어딘가에 떴다 heap에 => heap을 가리키는 heap => IoC 컨테이너
+// Inversion of Controll = 제어의 역전 = 제어의 주도권이 바뀜
+// heap을 관리하는 게 나였는데 스프링한테 제어권을 넘김
+
+// @RestController = return 시에 MessageConvertor 동장 
+// 저 값을 PrintWriter 달아서 응답해준다.
+// 응답의 값이 일반 String 바로 응답.
+// 응답의 값이 javaObject이면 json으로 파싱해서 응답
+
+// MessageConvertor(부모) - json 관련클래스 extends
+
+// @Controller = return 시에 ViewResolver 동작
+
+
+// http://localhost:8080/
+
+@RestController
+public class IndexController {
+	
+	@GetMapping("/")
+	public void index() {
+		System.out.println("index() 호출됨");
+	}
+}

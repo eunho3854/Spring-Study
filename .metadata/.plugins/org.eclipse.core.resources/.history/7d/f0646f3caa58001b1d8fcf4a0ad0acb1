@@ -1,0 +1,5 @@
+package com.cos.pserson.domain;
+
+public class UserRepository {
+
+}

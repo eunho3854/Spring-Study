@@ -1,0 +1,5 @@
+package com.cos.pserson.web;
+
+public class UserController {
+
+}

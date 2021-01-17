@@ -1,0 +1,85 @@
+package com.cos.pserson.web;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cos.pserson.domain.CommonDto;
+import com.cos.pserson.domain.JoinReqDto;
+import com.cos.pserson.domain.UpdateReqDto;
+import com.cos.pserson.domain.User;
+import com.cos.pserson.domain.UserRepository;
+
+// 사용자 요청 마다 메모리에 뜸
+@RestController
+public class UserController {
+
+	// IoC에 메모리가 띄어져 있음. (@Repository 때문)
+	private UserRepository userRepository;
+	
+	// DI = 의존성 주입
+	public UserController(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+	
+	// @RequireAtgsConstructor
+	// private final UserRepository userRepository;
+	// 이렇게 작성하면 굳이 디폴트 생성자를 안 만들어도 됨.
+	
+	// http://localgost:8080/user
+	@GetMapping("/user")
+	public CommonDto<List<User>> findAll() {
+		System.out.println("findAll");
+		return new CommonDto<>(HttpStatus.OK.value(), userRepository.findAll()); // MessageConverter (JavaObject -> Json String)
+	}
+	
+	// http://localgost:8080/user/1	
+	@GetMapping("/user/{id}") 
+	// 주소에 적혀 있는 값을 int로 바꿔줌
+	// {} 안에 있는 값을 파싱해줌
+	public CommonDto<User> findById(@PathVariable int id) {
+		System.out.println("findById : id : " + id);
+		return new CommonDto<>(HttpStatus.OK.value(), userRepository.findById(id));
+	}
+
+	// http://localgost:8080/user	
+	@PostMapping("/user")
+	// x-www-form-urlencoded => request.getParameter()
+	// text/plain => @RequsetBody 어노테이션
+	// application/json => @RequestBody 어노테이션 + 오브젝트로 받기
+	public CommonDto<String> save(@RequestBody JoinReqDto dto) {
+		System.out.println("save");
+		System.out.println("user : " + dto);
+		userRepository.save(dto);
+//		System.out.println("data : " + data);
+
+//		System.out.println("username : " + username);
+//		System.out.println("password : " + password);
+//		System.out.println("phone : " + phone);
+		
+		return  new CommonDto<>(HttpStatus.CREATED.value(),"ok");
+	}
+	
+	// http://localgost:8080/user/1	
+	@DeleteMapping("/user/{id}")
+	public CommonDto delete(@PathVariable int id) {
+		System.out.println("delete");
+		userRepository.delete(id);
+		return new CommonDto<>(HttpStatus.OK.value(), null);
+	}
+	
+	// http://localgost:8080/user/1	
+	@PutMapping("/user/{id}")
+	public CommonDto update(@PathVariable int id, @RequestBody UpdateReqDto dto) {
+		System.out.println("update");
+		userRepository.update(id, dto);
+		return new CommonDto<>(HttpStatus.OK.value());
+	}
+}
