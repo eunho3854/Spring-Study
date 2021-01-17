@@ -1,0 +1,5 @@
+package com.cos.pserson.config;
+
+public class BindingAdvice {
+
+}

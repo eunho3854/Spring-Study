@@ -1,0 +1,74 @@
+package com.cos.pserson.config;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
+import com.cos.pserson.domain.CommonDto;
+
+// @Configuration => 설정
+// 나머진 @Component
+@Component
+@Aspect
+public class BindingAdvice {
+	
+//	@Before("execution(* com.cos.person.web..*Controller.*(..))")
+//	public void testCheck() {
+//		System.out.println("전처리 로그를 남겼습니다.");
+//	}
+//
+//	
+//	@After("execution(* com.cos.person.web..*Controller.*(..))")
+//	public void testCheck2() {
+//		System.out.println("후처리 로그를 남겼습니다.");
+//	}
+	// 함수 : 앞 뒤
+	// 함수 : 앞 (username이 안들어왔으면 강제로 넣어주고 실행)
+	// 함수 : 뒤 (응답만 관리)
+	
+	// @Before
+	// @After
+	// 앞뒤로 @Around
+	// 문법임. 외우지 말자. 쓸 때마다 그냥 검색!
+	// 원하는 함수만 검색 가능.
+	// web 폴더 안에 있는 모든 것들 중에 이름이 Controller로 끝나는 애들을 찾고 그 안에서 모든 메서드	
+	@Around("execution(* com.cos.pserson.web..*Controller.*(..))")
+	public Object validCheck(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+		String type = proceedingJoinPoint.getSignature().getDeclaringTypeName();
+		String method = proceedingJoinPoint.getSignature().getName();
+		
+		System.out.println("type : " + type);
+		System.out.println("method : " + method);
+		
+		Object[] args = proceedingJoinPoint.getArgs();
+		
+		for (Object arg : args) {
+			if(arg instanceof BindingResult) {
+				BindingResult bindingResult = (BindingResult) arg;
+				
+				System.out.println("bindingResult = " + bindingResult.getErrorCount());
+				if (bindingResult.hasErrors()) {
+					Map<String, String> errorMap = new HashMap<>();
+					
+					for(FieldError error : bindingResult.getFieldErrors()) {
+						errorMap.put(error.getField(), error.getDefaultMessage());
+					}
+					
+					return new CommonDto<>(HttpStatus.BAD_REQUEST.value(), errorMap);
+				}
+			}
+		}
+		
+		return proceedingJoinPoint.proceed(); // 함수의 스택을 실행해라.
+		// 실패한다면 함수에 진입도 못한 상태.
+	}
+}

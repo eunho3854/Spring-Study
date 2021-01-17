@@ -2,7 +2,10 @@ package com.cos.pserson.web;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,17 +57,13 @@ public class UserController {
 	// x-www-form-urlencoded => request.getParameter()
 	// text/plain => @RequsetBody 어노테이션
 	// application/json => @RequestBody 어노테이션 + 오브젝트로 받기
-	public CommonDto<String> save(@RequestBody JoinReqDto dto) {
-		System.out.println("save");
-		System.out.println("user : " + dto);
-		userRepository.save(dto);
-//		System.out.println("data : " + data);
+	public CommonDto<?> save(@Valid @RequestBody JoinReqDto dto, BindingResult bindingResult) {
 
-//		System.out.println("username : " + username);
-//		System.out.println("password : " + password);
-//		System.out.println("phone : " + phone);
+		System.out.println("save()");
+		System.out.println("user : "+dto);
+		userRepository.save(dto);
 		
-		return  new CommonDto<>(HttpStatus.CREATED.value(),"ok");
+		return new CommonDto<>(HttpStatus.CREATED.value(), "ok");
 	}
 	
 	// http://localgost:8080/user/1	
@@ -77,7 +76,8 @@ public class UserController {
 	
 	// http://localgost:8080/user/1	
 	@PutMapping("/user/{id}")
-	public CommonDto update(@PathVariable int id, @RequestBody UpdateReqDto dto) {
+	public CommonDto update(@PathVariable int id, @Valid @RequestBody UpdateReqDto dto, BindingResult bindingResult) {
+		
 		System.out.println("update");
 		userRepository.update(id, dto);
 		return new CommonDto<>(HttpStatus.OK.value());

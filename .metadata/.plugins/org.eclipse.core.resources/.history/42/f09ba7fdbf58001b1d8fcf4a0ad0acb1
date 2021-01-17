@@ -1,0 +1,33 @@
+package com.cos.pserson.config;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+
+// @Configuration => 설정
+// 나머진 @Component
+@Component
+@Aspect
+public class BindingAdvice {
+
+	// 함수 : 앞 뒤
+	// 함수 : 앞 (username이 안들어왔으면 강제로 넣어주고 실행)
+	// 함수 : 뒤 (응답만 관리)
+	
+	// @Before
+	// @After
+	// 앞뒤로 @Around
+	@Around("execution(* com.cos.person.web..*Controller.*(..))") 
+	// 문법임. 외우지 말자. 쓸 때마다 그냥 검색!
+	// web 폴더 안에 있는 모든 것들 중에 이름이 Controller로 끝나는 애들을 찾고 그 안에서 모든 메서드
+	public void validCheck(ProceedingJoinPoint proceedingJoinPoint) {
+		String type = proceedingJoinPoint.getSignature().getDeclaringTypeName();
+		String method = proceedingJoinPoint.getSignature().getName();
+		
+		System.out.println("type : " + type);
+		System.out.println("method : " + method);
+	}
+}
